@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "ijyeQCliPt5uNNoWOo/D1yVLuZSfjesTeRwh+IOBLu0=",
+  "Source": "mySteamGraphAPI",
+  "BasePath": "_content/mySteamGraphAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
