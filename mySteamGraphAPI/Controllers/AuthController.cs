@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -8,7 +9,10 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using mySteamGraphAPI.Context;
 using mySteamGraphAPI.Dtos;
 using mySteamGraphAPI.Models;
+using Newtonsoft.Json.Linq;
+using NuGet.Common;
 using System.ComponentModel.DataAnnotations;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace mySteamGraphAPI.Controllers
 {
@@ -21,6 +25,8 @@ namespace mySteamGraphAPI.Controllers
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IOptionsMonitor<BearerTokenOptions> _bearerOptions;
         private readonly TimeProvider _timeProvider;
+        private readonly HttpClient client = new HttpClient();
+        private readonly string steamApiUrl = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=2621FCCA6A21E594FF85870DA3470D65";
         public AuthController(SignInManager<ApplicationUser> signInManager, 
             UserManager<ApplicationUser> userManager, IUserStore<ApplicationUser> userStore,
              IOptionsMonitor<BearerTokenOptions> bearerOption, TimeProvider timeProvider)
@@ -34,26 +40,47 @@ namespace mySteamGraphAPI.Controllers
         }
 
         [HttpPost("signUp")]
-        public async Task<Results<Ok, ProblemHttpResult>> RegisterUser(RegisterDto userData)
+        public async Task<Results<Ok, ProblemHttpResult, NotFound<string>>> RegisterUser(RegisterDto userData)
         {
 
+            HttpResponseMessage response= await client.GetAsync(steamApiUrl+ "&steamids="+userData.steamID);
 
-            var emailStore = (IUserEmailStore<ApplicationUser>)_userStore;
-            var email = userData.Email;
-            var user = new ApplicationUser();
-            user.steamUserId = userData.steamID;
-            await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
-            await emailStore.SetEmailAsync(user, email, CancellationToken.None);
-            var result = await _userManager.CreateAsync(user, userData.Password);
+            if (response.IsSuccessStatusCode) {
+            var data= JToken.Parse(await response.Content.ReadAsStringAsync());
 
-            if (!result.Succeeded)
+            if (data["response"].SelectToken("players").Count()>0)
             {
-                return TypedResults.Problem(result.ToString());
+                var emailStore = (IUserEmailStore<ApplicationUser>)_userStore;
+                var email = userData.Email;
+                var user = new ApplicationUser();
+                user.steamUserId = userData.steamID;
+                await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
+                await emailStore.SetEmailAsync(user, email, CancellationToken.None);
+                var result = await _userManager.CreateAsync(user, userData.Password);
+
+                if (!result.Succeeded)
+                {
+                    return TypedResults.Problem(result.ToString());
+                }
+
+                return TypedResults.Ok();
+
+
+            }
+            else
+            {
+
+                return TypedResults.NotFound("Steam Id is not valid");
             }
 
-            return TypedResults.Ok();
 
+            }
+            else
+            {
 
+                return TypedResults.Problem("There was a problem");
+
+            }
 
 
         }
@@ -63,9 +90,11 @@ namespace mySteamGraphAPI.Controllers
         {
 
             var result = await _signInManager.PasswordSignInAsync(loginInput.Email, loginInput.Password, false, lockoutOnFailure: true);
-
+            
             if (result.Succeeded)
             {
+                 
+                 
                 return TypedResults.Empty;
             }
             else
@@ -96,5 +125,26 @@ namespace mySteamGraphAPI.Controllers
             var newPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
             return TypedResults.SignIn(newPrincipal, authenticationScheme: IdentityConstants.BearerScheme);
 }
+        [Authorize(AuthenticationSchemes = "Identity.Bearer")]
+        [HttpGet("userSteamId")]
+        public async Task<Results<Ok<long>, ProblemHttpResult>> getSteamId()
+        {
+
+            var result=  await _userManager.GetUserAsync(User);
+
+            if(result != null)
+            {
+                return TypedResults.Ok(result.steamUserId);
+
+            }
+            else
+            {
+               return TypedResults.Problem("no encontrado");
+
+            }
+
+        }
+
+
     }
 }

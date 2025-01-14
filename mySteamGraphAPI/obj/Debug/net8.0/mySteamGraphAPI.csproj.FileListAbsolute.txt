@@ -288,3 +288,4 @@ C:\Users\Usuario\Desktop\proyectos\angular\mySteamGraphs\BackEnd\mySteamGraphAPI
 C:\Users\Usuario\Desktop\proyectos\angular\mySteamGraphs\BackEnd\mySteamGraphAPI\mySteamGraphAPI\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Usuario\Desktop\proyectos\angular\mySteamGraphs\BackEnd\mySteamGraphAPI\mySteamGraphAPI\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
 C:\Users\Usuario\Desktop\proyectos\angular\mySteamGraphs\BackEnd\mySteamGraphAPI\mySteamGraphAPI\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Usuario\Desktop\proyectos\angular\mySteamGraphs\BackEnd\mySteamGraphAPI\mySteamGraphAPI\obj\Debug\net8.0\mySteamGraphAPI.sourcelink.json

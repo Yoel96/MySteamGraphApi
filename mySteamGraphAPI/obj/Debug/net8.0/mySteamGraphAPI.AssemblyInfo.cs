@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("mySteamGraphAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+920e2844fcfd29271190e82414b0688773284b4c")]
 [assembly: System.Reflection.AssemblyProductAttribute("mySteamGraphAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("mySteamGraphAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
