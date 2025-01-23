@@ -23,7 +23,7 @@ namespace mySteamGraphAPI.Controllers
 
     public class SteamController : ControllerBase
     {
-        private readonly string steamApiKey = "2621FCCA6A21E594FF85870DA3470D65";
+        private readonly string steamApiKey = "";
         private readonly HttpClient client = new HttpClient();
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly string steamUserUrl = "https://api.steampowered.com/ISteamUser/";
